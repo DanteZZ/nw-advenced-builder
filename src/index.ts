@@ -3,6 +3,7 @@ import { NWAB } from './main/main';
 export * from './main/main';
 
 const Builder = new NWAB({
+  nwjs: { version: '0.13.2', platforms: ['osx', 'win', 'linux'] },
   app: {
     name: 'test',
     directory: './src',

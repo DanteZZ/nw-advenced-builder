@@ -5,7 +5,7 @@ export type NWPackageLinux = 'appimage' | 'deb' | 'aur';
 export type NWPackageWin = 'nsis';
 export type NWPackageOsx = 'dmg';
 
-export type NWFlavour = 'normal' | 'sdk';
+export type NWFlavor = 'normal' | 'sdk';
 
 export type NWABConfig = {
   nwjs?: {
@@ -17,21 +17,23 @@ export type NWABConfig = {
       linux?: NWPackageLinux[];
       osx?: NWPackageOsx[];
     };
-    flavour?: NWFlavour;
+    flavor?: NWFlavor;
     platformSettings?: {
       [key in NWPlatform]?: {
         arch?: NWArch[];
 
         version?: string;
-        flavour?: NWFlavour;
+        flavor?: NWFlavor;
         archSettings?: {
           [key in NWArch]?: {
             version?: string;
-            flavour?: NWFlavour;
+            flavor?: NWFlavor;
           };
         };
       };
     };
+    buildsRepoUrl?: string;
+    manifestRepoUrl?: string;
   };
   app: {
     name: string;

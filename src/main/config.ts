@@ -10,6 +10,13 @@ export const defaultConfig: NWABConfig = {
       osx: ['dmg'],
       linux: ['appimage'],
     },
+    platformSettings: {
+      osx: {
+        arch: ['x64'],
+      },
+    },
+    buildsRepoUrl: 'https://dl.nwjs.io',
+    manifestRepoUrl: 'https://nwjs.io/versions',
   },
   app: {
     name: 'nw-app',
