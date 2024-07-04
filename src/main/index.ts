@@ -1,4 +1,5 @@
 import objectAssignDeep from 'object-assign-deep';
+import process from 'process';
 
 import { NWABConfig, NWArch, NWFlavor, NWPlatform } from './types';
 import { defaultConfig } from './config';
@@ -13,6 +14,7 @@ import { decompress } from '../utils/decompress';
 import { remove } from '../utils/remove';
 import { log } from './log';
 import { xattr } from '../utils/xattr';
+import { execute } from '../utils/exec';
 
 export class NWAB {
   public config: NWABConfig = defaultConfig;
@@ -27,7 +29,52 @@ export class NWAB {
   public async run(mode: RunMode = 'dev'): Promise<void> {
     log.info(`Run in ${mode.toUpperCase()} mode...`);
     await this.verifyCache(mode);
+    if (mode === 'dev') {
+      await this.dev();
+    } else {
+      await this.build();
+    }
   }
+
+  public async dev() {
+    try {
+      if (this.getBinaryName() === null) {
+        throw new Error('Unsupported platform.');
+      }
+
+      const build = {
+        version: this.getVersion(),
+        flavor: 'sdk',
+        platform: this.getPlatform(),
+        arch: this.getArch(),
+      };
+
+      const nwDir = resolve(
+        this.cacheDir,
+        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${
+          build.platform
+        }-${build.arch}`,
+        this.getBinaryName()
+      );
+      const proc = await execute(resolve(this.config.app.directory), nwDir, '');
+
+      proc.on('close', () => process.kill(process.pid));
+      proc.on('exit', () => process.kill(process.pid));
+
+      process.on('SIGINT', () => {
+        proc.kill();
+        process.kill(process.pid);
+      }); // catch ctrl-c
+      process.on('SIGTERM', () => {
+        proc.kill();
+        process.kill(process.pid);
+      }); // catch kill
+    } catch (error) {
+      log.error(error);
+    }
+  }
+
+  public build(): void {}
 
   // eslint-disable-next-line @typescript-eslint/require-await
   public async verifyCache(mode: RunMode): Promise<void> {
@@ -167,6 +214,18 @@ export class NWAB {
       return arch.includes(b.arch);
     });
   }
+
+  private getBinaryName = (platform?: NWPlatform): string => {
+    const p = platform || this.getPlatform();
+    switch (p) {
+      case 'linux':
+        return 'nw';
+      case 'osx':
+        return 'nwjs.app/Contents/MacOS/nwjs';
+      default:
+        return 'nw.exe';
+    }
+  };
 }
 
 type RunMode = 'dev' | 'build';
