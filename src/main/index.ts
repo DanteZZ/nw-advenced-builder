@@ -15,6 +15,7 @@ import { remove } from '../utils/remove';
 import { log } from './log';
 import { xattr } from '../utils/xattr';
 import { execute } from '../utils/exec';
+import { build } from '../utils/build';
 
 export class NWAB {
   public config: NWABConfig = defaultConfig;
@@ -28,6 +29,9 @@ export class NWAB {
 
   public async run(mode: RunMode = 'dev'): Promise<void> {
     log.info(`Run in ${mode.toUpperCase()} mode...`);
+    log.info('Selected versions:');
+    log.info(this.getNWBuilds());
+
     await this.verifyCache(mode);
     if (mode === 'dev') {
       await this.dev();
@@ -36,7 +40,7 @@ export class NWAB {
     }
   }
 
-  public async dev() {
+  public async dev(): Promise<void> {
     try {
       if (this.getBinaryName() === null) {
         throw new Error('Unsupported platform.');
@@ -49,14 +53,18 @@ export class NWAB {
         arch: this.getArch(),
       };
 
-      const nwDir = resolve(
+      const nwBinary = resolve(
         this.cacheDir,
         `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${
           build.platform
         }-${build.arch}`,
         this.getBinaryName()
       );
-      const proc = await execute(resolve(this.config.app.directory), nwDir, '');
+      const proc = await execute(
+        resolve(this.config.app.directory),
+        nwBinary,
+        ''
+      );
 
       proc.on('close', () => process.kill(process.pid));
       proc.on('exit', () => process.kill(process.pid));
@@ -74,7 +82,33 @@ export class NWAB {
     }
   }
 
-  public build(): void {}
+  public async build(): Promise<void> {
+    try {
+      if (this.getBinaryName() === null) {
+        throw new Error('Unsupported platform.');
+      }
+      const builds = this.getNWBuilds();
+
+      for (const b of builds) {
+        log.info('Start building', b);
+        const nwDir = resolve(
+          this.cacheDir,
+          `nwjs${b.flavor === 'sdk' ? '-sdk' : ''}-v${b.version}-${
+            b.platform
+          }-${b.arch}`
+        );
+        await build(
+          this.config.app.directory,
+          nwDir,
+          `${this.config.app.output}/${b.platform}-${b.arch}` || '',
+          b.platform,
+          this.config
+        );
+      }
+    } catch (error) {
+      log.error(error);
+    }
+  }
 
   // eslint-disable-next-line @typescript-eslint/require-await
   public async verifyCache(mode: RunMode): Promise<void> {

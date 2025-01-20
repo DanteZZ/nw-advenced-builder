@@ -7,6 +7,48 @@ export type NWPackageOsx = 'dmg';
 
 export type NWFlavor = 'normal' | 'sdk';
 
+export type NWPropertiesWin = {
+  Comments?: string;
+  CompanyName?: string;
+  FileDescription?: string;
+  FileVersion?: string;
+  InternalName?: string;
+  LegalCopyright?: string;
+  LegalTrademarks?: string;
+  OriginalFilename?: string;
+  PrivateBuild?: string;
+  ProductName?: string;
+  ProductVersion?: string;
+  SpecialBuild?: string;
+};
+
+export type NWPropertiesLinux = {
+  Type?: string;
+  Version?: string;
+  Name?: string;
+  GenericName?: string;
+  NoDisplay?: string;
+  Comment?: string;
+  Icon?: string;
+  Hidden?: string;
+  OnlyShowIn?: string;
+  NotShowIn?: string;
+  DBusActivatable?: string;
+  TryExec?: string;
+  Exec?: string;
+  Path?: string;
+  Terminal?: string;
+  Actions?: string;
+  MimeType?: string;
+  Categories?: string;
+  Implements?: string;
+  Keywords?: string;
+  StartupNotify?: string;
+  StartupWMClass?: string;
+  PrefersNonDefaultGPU?: string;
+  SingleMainWindow?: string;
+};
+
 export type NWABConfig = {
   nwjs?: {
     version?: string;
@@ -38,7 +80,17 @@ export type NWABConfig = {
   app: {
     name: string;
     directory: string;
-    output?: string;
+    output: string;
     cache?: string;
+    version?: string;
+    icon?: string;
+    settings?: {
+      win?: {
+        properties?: NWPropertiesWin;
+      };
+      linux?: {
+        properties: NWPropertiesLinux;
+      };
+    };
   };
 };

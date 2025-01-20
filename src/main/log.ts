@@ -4,7 +4,7 @@ const { combine, timestamp, printf } = format;
 
 const customFormat = printf(({ level, message, timestamp }) => {
   return `[ NWAB ] [ ${level.toUpperCase()} ] ${new Date(
-    timestamp
+    timestamp as string
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   ).toLocaleString()} ${message}`;
 });

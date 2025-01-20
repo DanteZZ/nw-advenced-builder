@@ -21,7 +21,7 @@ export const defaultConfig: NWABConfig = {
   app: {
     name: 'nw-app',
     directory: '',
-    output: './releases',
+    output: './dist',
     cache: './cache',
   },
 };
