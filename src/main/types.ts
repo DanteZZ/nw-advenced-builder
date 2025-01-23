@@ -86,10 +86,21 @@ export type NWABConfig = {
     icon?: string;
     settings?: {
       win?: {
+        name?: string;
+        version?: string;
+        icon?: string;
         properties?: NWPropertiesWin;
       };
       linux?: {
+        name?: string;
+        version?: string;
+        icon?: string;
         properties: NWPropertiesLinux;
+      };
+      osx?: {
+        name?: string;
+        version?: string;
+        icon?: string;
       };
     };
   };

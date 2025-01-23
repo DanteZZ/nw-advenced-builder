@@ -48,7 +48,7 @@ export const build = async (
   let version;
 
   if (conf.app.version) {
-    version = conf.app.version;
+    version = conf.app?.settings?.[platform]?.version || conf.app.version;
   } else {
     const pjs = JSON.parse(
       await readFile(resolve(bundleDir, 'package.json'), 'utf-8')
@@ -67,8 +67,8 @@ export const build = async (
       await setWinConfig({
         properties: conf.app.settings?.[platform]?.properties || {},
         outDir,
-        name: conf.app.name,
-        icon: conf.app.icon,
+        name: conf.app.settings?.win?.name || conf.app.name,
+        icon: conf.app.settings?.win?.icon || conf.app.icon,
         version,
       });
       break;
