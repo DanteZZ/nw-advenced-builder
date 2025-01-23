@@ -55,7 +55,8 @@ export class NWAB {
 
       const nwBinary = resolve(
         this.cacheDir,
-        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${build.platform
+        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${
+          build.platform
         }-${build.arch}`,
         this.getBinaryName()
       );
@@ -92,7 +93,8 @@ export class NWAB {
         log.info('Start building', b);
         const nwDir = resolve(
           this.cacheDir,
-          `nwjs${b.flavor === 'sdk' ? '-sdk' : ''}-v${b.version}-${b.platform
+          `nwjs${b.flavor === 'sdk' ? '-sdk' : ''}-v${b.version}-${
+            b.platform
           }-${b.arch}`
         );
         await build(
@@ -121,13 +123,13 @@ export class NWAB {
     const nwBuilds: NWBuild[] =
       mode === 'dev'
         ? [
-          {
-            version: this.getVersion(),
-            flavor: 'sdk',
-            platform: this.getPlatform(),
-            arch: this.getArch(),
-          },
-        ]
+            {
+              version: this.getVersion(),
+              flavor: 'sdk',
+              platform: this.getPlatform(),
+              arch: this.getArch(),
+            },
+          ]
         : this.getNWBuilds();
     if (mode === 'build')
       log.info(
@@ -140,13 +142,15 @@ export class NWAB {
     for (const build of nwBuilds) {
       const nwDir = resolve(
         this.cacheDir,
-        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${build.platform
+        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${
+          build.platform
         }-${build.arch}`
       );
 
       if (!(await isCached(nwDir))) {
         log.debug(
-          `Download relevant NW.js binary of ${build.platform}-${build.arch}${build.flavor === 'sdk' ? '-sdk' : ''
+          `Download relevant NW.js binary of ${build.platform}-${build.arch}${
+            build.flavor === 'sdk' ? '-sdk' : ''
           }`
         );
         let ver = build.version;
@@ -189,7 +193,6 @@ export class NWAB {
         } catch (e) {
           log.warn(e);
         }
-
       } else {
         log.debug('Using cached NW.js binaries');
       }

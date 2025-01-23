@@ -53,7 +53,7 @@ export const build = async (
     const pjs = JSON.parse(
       await readFile(resolve(bundleDir, 'package.json'), 'utf-8')
     );
-    version = pjs?.version || '1.0.0';
+    version = conf.app?.version || pjs?.version || '1.0.0';
   }
 
   await writeFile(resolve(dirName, 'packages/version'), version);
@@ -96,5 +96,5 @@ export const build = async (
   if (conf.app.zip || conf.app.settings?.[platform]?.zip) {
     log.info('Compress build');
     await compress(outDir);
-  };
+  }
 };
