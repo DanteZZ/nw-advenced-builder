@@ -84,23 +84,27 @@ export type NWABConfig = {
     cache?: string;
     version?: string;
     icon?: string;
+    zip?: boolean;
     settings?: {
       win?: {
         name?: string;
         version?: string;
         icon?: string;
         properties?: NWPropertiesWin;
+        zip?: boolean;
       };
       linux?: {
         name?: string;
         version?: string;
         icon?: string;
         properties: NWPropertiesLinux;
+        zip?: boolean;
       };
       osx?: {
         name?: string;
         version?: string;
         icon?: string;
+        zip?: boolean;
       };
     };
   };

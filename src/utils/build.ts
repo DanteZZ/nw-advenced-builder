@@ -92,4 +92,9 @@ export const build = async (
     default:
       break;
   }
+
+  if (conf.app.zip || conf.app.settings?.[platform]?.zip) {
+    log.info('Compress build');
+    await compress(outDir);
+  };
 };
