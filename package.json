@@ -1,6 +1,6 @@
 {
   "name": "nw-advenced-builder",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Advenced NW.js builder",
   "main": "./lib/index.js",
   "type": "module",
