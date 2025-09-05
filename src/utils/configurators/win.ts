@@ -1,10 +1,12 @@
-import { rename } from 'fs-extra';
+import * as fse from 'fs-extra';
 import { resolve } from 'path';
 
 import rcedit from 'rcedit';
 
-import { log } from '../../main/log';
-import { NWPropertiesWin } from '../../main/types';
+import { log } from '../../main/log.js';
+import { NWPropertiesWin } from '../../main/types.js';
+
+const { rename } = fse;
 
 const setWinConfig = async (c: {
   properties: NWPropertiesWin;

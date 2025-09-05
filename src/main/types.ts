@@ -54,6 +54,7 @@ export type NWABConfig = {
     version?: string;
     platforms?: NWPlatform[];
     arch?: NWArch[];
+    ffmpeg?: boolean;
     packages?: {
       win?: NWPackageWin[];
       linux?: NWPackageLinux[];
@@ -76,6 +77,7 @@ export type NWABConfig = {
     };
     buildsRepoUrl?: string;
     manifestRepoUrl?: string;
+    ffmpegRepoUrl?: string;
   };
   app: {
     name: string;

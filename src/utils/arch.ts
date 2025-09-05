@@ -1,6 +1,6 @@
 import { arch as architecture } from 'process';
 
-import { NWArch } from '../main/types';
+import { NWArch } from '../main/types.js';
 
 export const getArch = (arch: string = architecture): NWArch => {
   switch (arch) {

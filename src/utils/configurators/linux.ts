@@ -1,9 +1,9 @@
 import { platform } from 'process';
-import { rename, writeFile } from 'fs-extra';
+import * as fse from 'fs-extra';
 
-import { log } from '../../main/log';
-import { NWPropertiesLinux } from '../../main/types';
-
+import { log } from '../../main/log.js';
+import { NWPropertiesLinux } from '../../main/types.js';
+const { rename, writeFile } = fse;
 export const setLinuxConfig = async (c: {
   properties: NWPropertiesLinux;
   name: string;

@@ -1,8 +1,8 @@
 import { exec } from 'child_process';
 import { resolve } from 'path';
 
-import { log } from '../main/log';
-import { NWArch, NWPlatform } from '../main/types';
+import { log } from '../main/log.js';
+import { NWArch, NWPlatform } from '../main/types.js';
 
 export const xattr = (
   platform: NWPlatform,

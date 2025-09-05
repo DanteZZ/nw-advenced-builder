@@ -1,4 +1,4 @@
-import { NWABConfig } from './types';
+import { NWABConfig } from './types.js';
 
 export const defaultConfig: NWABConfig = {
   nwjs: {
@@ -16,7 +16,8 @@ export const defaultConfig: NWABConfig = {
       },
     },
     buildsRepoUrl: 'https://dl.nwjs.io',
-    manifestRepoUrl: 'https://nwjs.io/versions',
+    manifestRepoUrl: 'https://nwjs.io/versions.json',
+    ffmpegRepoUrl: 'https://github.com/nwjs-ffmpeg-prebuilt/nwjs-ffmpeg-prebuilt/releases/download'
   },
   app: {
     name: 'nw-app',

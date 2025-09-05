@@ -1,21 +1,21 @@
 import objectAssignDeep from 'object-assign-deep';
 import process from 'process';
 
-import { NWABConfig, NWArch, NWFlavor, NWPlatform } from './types';
-import { defaultConfig } from './config';
-import { getArch } from '../utils/arch';
-import { getPlatform } from '../utils/platform';
+import { NWABConfig, NWArch, NWFlavor, NWPlatform } from './types.js';
+import { defaultConfig } from './config.js';
+import { getArch } from '../utils/arch.js';
+import { getPlatform } from '../utils/platform.js';
 import { resolve } from 'path';
-import { isCached } from '../utils/cache';
-import { download } from '../utils/download';
+import { isCached } from '../utils/cache.js';
+import { download } from '../utils/download.js';
 import { promises } from 'fs';
-import { getReleaseInfo } from '../utils/getReleaseInfo';
-import { decompress } from '../utils/decompress';
-import { remove } from '../utils/remove';
-import { log } from './log';
-import { xattr } from '../utils/xattr';
-import { execute } from '../utils/exec';
-import { build } from '../utils/build';
+import { getReleaseInfo } from '../utils/getReleaseInfo.js';
+import { decompress } from '../utils/decompress.js';
+import { remove } from '../utils/remove.js';
+import { log } from './log.js';
+import { xattr } from '../utils/xattr.js';
+import { execute } from '../utils/exec.js';
+import { build } from '../utils/build.js';
 
 export class NWAB {
   public config: NWABConfig = defaultConfig;
@@ -30,7 +30,8 @@ export class NWAB {
   public async run(mode: RunMode = 'dev'): Promise<void> {
     log.info(`Run in ${mode.toUpperCase()} mode...`);
     log.info('Selected versions:');
-    log.info(this.getNWBuilds());
+    log.info(this.getNWBuilds().map(i => `${i.platform
+      }-${i.arch}`).join(', '));
 
     await this.verifyCache(mode);
     if (mode === 'dev') {
@@ -55,8 +56,7 @@ export class NWAB {
 
       const nwBinary = resolve(
         this.cacheDir,
-        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${
-          build.platform
+        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${build.platform
         }-${build.arch}`,
         this.getBinaryName()
       );
@@ -93,8 +93,7 @@ export class NWAB {
         log.info('Start building', b);
         const nwDir = resolve(
           this.cacheDir,
-          `nwjs${b.flavor === 'sdk' ? '-sdk' : ''}-v${b.version}-${
-            b.platform
+          `nwjs${b.flavor === 'sdk' ? '-sdk' : ''}-v${b.version}-${b.platform
           }-${b.arch}`
         );
         await build(
@@ -123,14 +122,15 @@ export class NWAB {
     const nwBuilds: NWBuild[] =
       mode === 'dev'
         ? [
-            {
-              version: this.getVersion(),
-              flavor: 'sdk',
-              platform: this.getPlatform(),
-              arch: this.getArch(),
-            },
-          ]
+          {
+            version: this.getVersion(),
+            flavor: 'sdk',
+            platform: this.getPlatform(),
+            arch: this.getArch(),
+          },
+        ]
         : this.getNWBuilds();
+
     if (mode === 'build')
       log.info(
         `Used NW binaries: ${nwBuilds
@@ -139,18 +139,17 @@ export class NWAB {
           )
           .join(', ')}`
       );
+
     for (const build of nwBuilds) {
       const nwDir = resolve(
         this.cacheDir,
-        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${
-          build.platform
+        `nwjs${build.flavor === 'sdk' ? '-sdk' : ''}-v${build.version}-${build.platform
         }-${build.arch}`
       );
 
       if (!(await isCached(nwDir))) {
         log.debug(
-          `Download relevant NW.js binary of ${build.platform}-${build.arch}${
-            build.flavor === 'sdk' ? '-sdk' : ''
+          `Download relevant NW.js binary of ${build.platform}-${build.arch}${build.flavor === 'sdk' ? '-sdk' : ''
           }`
         );
         let ver = build.version;
@@ -169,7 +168,7 @@ export class NWAB {
             `Platform ${build.platform} and architecture ${build.arch} is not supported by this download server. Sorry!`
           );
         }
-
+        // NW.js
         await download(
           ver,
           build.flavor,
@@ -178,21 +177,29 @@ export class NWAB {
           this.config.nwjs?.buildsRepoUrl || '',
           this.cacheDir
         );
-        await decompress(
-          build.platform,
-          this.cacheDir,
-          this.config.nwjs?.buildsRepoUrl || ''
-        );
-        await remove(
-          build.platform,
-          this.cacheDir,
-          this.config.nwjs?.buildsRepoUrl || ''
-        );
+        await decompress(build.platform, this.cacheDir, this.config.nwjs?.buildsRepoUrl || '');
+        await remove(build.platform, this.cacheDir, this.config.nwjs?.buildsRepoUrl || '');
         try {
           await xattr(build.platform, build.arch, nwDir);
         } catch (e) {
           log.warn(e);
         }
+
+        // FFmpeg
+        if (this.config.nwjs?.ffmpeg) {
+          const ffmpegUrl = this.config.nwjs?.ffmpegRepoUrl || '';
+          await download(
+            ver,
+            build.flavor,
+            build.platform,
+            build.arch,
+            ffmpegUrl,
+            this.cacheDir
+          );
+          await decompress(build.platform, this.cacheDir, ffmpegUrl, nwDir);
+          await remove(build.platform, this.cacheDir, ffmpegUrl);
+        }
+
       } else {
         log.debug('Using cached NW.js binaries');
       }

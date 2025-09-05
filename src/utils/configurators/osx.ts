@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import path from 'path';
 
 import plist from 'plist';
-import { log } from '../../main/log';
+import { log } from '../../main/log.js';
 
 const setOsxConfig = async (c: {
   name: string;

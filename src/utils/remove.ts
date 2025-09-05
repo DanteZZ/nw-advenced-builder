@@ -1,7 +1,7 @@
 import { promises } from 'fs';
 import { resolve } from 'path';
 
-import { log } from '../main/log';
+import { log } from '../main/log.js';
 import { NWPlatform } from '../main/types.js';
 
 const remove = async (

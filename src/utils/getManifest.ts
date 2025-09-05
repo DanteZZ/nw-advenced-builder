@@ -1,9 +1,9 @@
 import { get } from 'https';
-import { log } from '../main/log';
+import { log } from '../main/log.js';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getManifest = (manifestUrl: string): Promise<any> => {
-  let chunks: undefined[];
+  let chunks: any[] = [];
 
   return new Promise((resolve, reject) => {
     get(manifestUrl, res => {

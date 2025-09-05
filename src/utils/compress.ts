@@ -1,6 +1,6 @@
 import fs from 'fs';
 import archiver from 'archiver';
-import { log } from '../main/log';
+import { log } from '../main/log.js';
 
 /**
  * Compress a out directory

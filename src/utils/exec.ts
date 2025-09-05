@@ -1,6 +1,6 @@
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 
-import { log } from '../main/log';
+import { log } from '../main/log.js';
 
 const execute = (
   srcDir: string,
@@ -13,7 +13,7 @@ const execute = (
     srcDir = srcDir.replace(/\*[/*]*/, '');
     const nwProcess = spawn(nwPath, [srcDir.concat(argv)], {
       detached: true,
-      windowsHide: true,
+      windowsHide: false,
     });
 
     resolve(nwProcess);

@@ -1,6 +1,6 @@
 import { platform } from 'process';
 
-import { NWPlatform } from '../main/types';
+import { NWPlatform } from '../main/types.js';
 
 export const getPlatform = (plat: string = platform): NWPlatform => {
   switch (plat) {

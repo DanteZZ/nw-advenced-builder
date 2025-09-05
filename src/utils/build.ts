@@ -1,13 +1,15 @@
 import path, { resolve } from 'path';
-import { copy, rm, rename, readFile, writeFile } from 'fs-extra';
+import * as fse from 'fs-extra';
 
-import { log } from '../main/log';
+import { log } from '../main/log.js';
 
 import { compress } from './compress.js';
-import { setWinConfig } from './configurators/win';
-import { NWABConfig, NWPlatform } from '../main/types';
-import { setLinuxConfig } from './configurators/linux';
-import { setOsxConfig } from './configurators/osx';
+import { setWinConfig } from './configurators/win.js';
+import { NWABConfig, NWPlatform } from '../main/types.js';
+import { setLinuxConfig } from './configurators/linux.js';
+import { setOsxConfig } from './configurators/osx.js';
+
+const { copy, rm, rename, readFile, writeFile } = fse;
 
 export const build = async (
   bundleDir: string,

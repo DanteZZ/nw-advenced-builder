@@ -1,9 +1,9 @@
 import { promises } from 'fs';
 import { resolve } from 'path';
 
-import { getManifest } from './getManifest';
-import { NWArch, NWPlatform } from '../main/types';
-import { log } from '../main/log';
+import { getManifest } from './getManifest.js';
+import { NWArch, NWPlatform } from '../main/types.js';
+import { log } from '../main/log.js';
 
 /**
  * Get version specific release metadata
