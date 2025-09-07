@@ -1,5 +1,7 @@
 import { platform } from 'process';
-import fs from 'fs-extra';
+import fse from 'fs-extra';
+import { promises as fsa } from 'fs';
+
 import path from 'path';
 
 import plist from 'plist';
@@ -18,7 +20,7 @@ const setOsxConfig = async (c: {
   }
   try {
     const outApp = path.resolve(c.outDir, `${c.name}.app`);
-    await fs.rename(path.resolve(c.outDir, 'nwjs.app'), outApp);
+    await fse.move(path.resolve(c.outDir, 'nwjs.app'), outApp);
 
     const iconPath = path.resolve(outApp, 'Contents/Resources/app.icns');
     const iconDocumentPath = path.resolve(
@@ -27,29 +29,29 @@ const setOsxConfig = async (c: {
     );
 
     if (c.icon) {
-      await fs.rm(iconPath);
-      await fs.rm(iconDocumentPath);
-      await fs.copy(c.icon, iconPath);
-      await fs.copy(c.icon, iconDocumentPath);
+      await fse.remove(iconPath);
+      await fse.remove(iconDocumentPath);
+      await fse.copy(c.icon, iconPath);
+      await fse.copy(c.icon, iconDocumentPath);
     }
 
     // Rename CFBundleDisplayName in Contents/Info.plist
     const contentsInfoPlistPath = path.resolve(outApp, 'Contents/Info.plist');
     const contentsInfoPlistJson = plist.parse(
-      await fs.readFile(contentsInfoPlistPath, 'utf-8')
+      await fsa.readFile(contentsInfoPlistPath, 'utf-8')
     );
 
     //@ts-ignore Old architecture in plist types
     contentsInfoPlistJson.CFBundleDisplayName = c.name;
     const contentsInfoPlist = plist.build(contentsInfoPlistJson);
-    await fs.writeFile(contentsInfoPlistPath, contentsInfoPlist);
+    await fsa.writeFile(contentsInfoPlistPath, contentsInfoPlist);
 
     // Rename CFBundleDisplayName in Contents/Resources/en.lproj/InfoPlist.strings
     const contentsInfoPlistStringsPath = path.resolve(
       outApp,
       'Contents/Resources/en.lproj/InfoPlist.strings'
     );
-    const contentsInfoPlistStrings = await fs.readFile(
+    const contentsInfoPlistStrings = await fsa.readFile(
       contentsInfoPlistStringsPath,
       'utf-8'
     );
@@ -57,7 +59,7 @@ const setOsxConfig = async (c: {
       /CFBundleGetInfoString = "nwjs /,
       `CFBundleGetInfoString = "${c.name} `
     );
-    await fs.writeFile(contentsInfoPlistStringsPath, newPlistStrings);
+    await fsa.writeFile(contentsInfoPlistStringsPath, newPlistStrings);
 
     // Add product_string property to package.json
     // const packageJsonPath = path.resolve(outApp, "Contents/Resources/app.nw/package.json");

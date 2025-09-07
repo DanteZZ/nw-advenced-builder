@@ -1,6 +1,6 @@
 import path, { resolve } from 'path';
 import * as fse from 'fs-extra';
-
+import { promises as fsa } from 'fs';
 import { log } from '../main/log.js';
 
 import { compress } from './compress.js';
@@ -9,8 +9,8 @@ import { NWABConfig, NWPlatform } from '../main/types.js';
 import { setLinuxConfig } from './configurators/linux.js';
 import { setOsxConfig } from './configurators/osx.js';
 
-const { copy, rm, rename, readFile, writeFile } = fse;
-
+const { copy, move, remove } = fse;
+const { readFile, writeFile } = fsa;
 export const build = async (
   bundleDir: string,
   nwDir: string,
@@ -19,7 +19,7 @@ export const build = async (
   conf: NWABConfig
 ): Promise<void> => {
   log.debug(`Remove any files at ${outDir} directory`);
-  await rm(outDir, { force: true, recursive: true });
+  await remove(outDir);
   log.debug(`Copy ${nwDir} files to ${outDir} directory`);
   await copy(nwDir, outDir);
 
@@ -39,7 +39,7 @@ export const build = async (
 
   log.debug(`moving "${platform !== 'osx' ? 'package.nw' : 'app.nw'}" archive`);
 
-  await rename(
+  await move(
     resolve(bundleDir + '.zip'),
     resolve(
       outDir,

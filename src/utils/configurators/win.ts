@@ -6,7 +6,7 @@ import rcedit from 'rcedit';
 import { log } from '../../main/log.js';
 import { NWPropertiesWin } from '../../main/types.js';
 
-const { rename } = fse;
+const { move } = fse;
 
 const setWinConfig = async (c: {
   properties: NWPropertiesWin;
@@ -17,7 +17,7 @@ const setWinConfig = async (c: {
 }): Promise<void> => {
   try {
     const outDirAppExe = resolve(c.outDir, `${c.name}.exe`);
-    await rename(resolve(c.outDir, 'nw.exe'), outDirAppExe);
+    await move(resolve(c.outDir, 'nw.exe'), outDirAppExe);
     await rcedit(outDirAppExe, {
       'file-version': c.version,
       icon: c.icon,

@@ -1,9 +1,11 @@
 import { platform } from 'process';
 import * as fse from 'fs-extra';
-
+import { promises as fsa } from 'fs';
 import { log } from '../../main/log.js';
 import { NWPropertiesLinux } from '../../main/types.js';
-const { rename, writeFile } = fse;
+const { move } = fse;
+const { writeFile } = fsa;
+
 export const setLinuxConfig = async (c: {
   properties: NWPropertiesLinux;
   name: string;
@@ -17,7 +19,7 @@ export const setLinuxConfig = async (c: {
     );
   }
 
-  await rename(`${c.outDir}/nw`, `${c.outDir}/${c.name}`);
+  await move(`${c.outDir}/nw`, `${c.outDir}/${c.name}`);
   if (Object.keys(c?.properties || {})?.length) {
     let fileContent = '[Desktop Entry]\n';
     for (const [key, val] of Object.entries(c.properties)) {
